@@ -1,0 +1,59 @@
+# shell provision halp:
+# https://automation-remarks.com/setting-vagrant/
+
+IMAGE_NAME = "generic/ubuntu2004"
+#N = 2
+
+Vagrant.configure("2") do |config|
+    config.ssh.insert_key = 'false'
+    config.vm.provider :virtualbox do |virtualbox|
+        virtualbox.memory = 4096
+        virtualbox.cpus = 2
+    end
+      
+    config.vm.define "ubuforwin" do |master|
+        master.vm.box = IMAGE_NAME
+        master.vm.network "public_network", mode: "bridge", ip: "192.168.2.195"
+        master.vm.hostname = "ubuforwin"
+        master.vm.provision "shell", inline: <<-SHELL
+          inline: "git clone https://github.com/mikefrostov/infrastructure_scripts.git"
+            #sudo apt-get update
+            sudo git clone https://github.com/mikefrostov/infrastructure_scripts.git
+            cd infrastructure_scripts/ubuntu18/ && sudo chmod +x dockerinst.sh && sudo ./dockerinst.sh
+            cd ../../
+            git clone https://github.com/mikefrostov/main_app.git
+            cd main_app
+            sudo docker build -t mikefrostov/main-app .
+            sudo docker run -d -p 8084:8084 mikefrostov/main-app
+            cd ..
+            git clone https://github.com/mikefrostov/rvproxy.git
+            cd rvproxy
+            sudo docker build -t mikefrostov/rvproxy .
+            sudo docker run -d -p 80:80 mikefrostov/rvproxy
+        SHELL
+
+# chef provisioning example
+    #    config.vm.provision :chef_solo do |chef|
+    #      chef.arguments = "--chef-license accept"
+    #      chef.cookbooks_path = "cookbooks"
+    #      chef.roles_path = "cookbooks/roles"
+    #      chef.add_role("vagrant")
+    #    end
+    end
+end
+
+#Vagrant.configure("2") do |config|
+#    config.ssh.insert_key = 'false'
+#    config.vm.provider :virtualbox do |v|
+#        v.memory = 2048
+#        v.cpus = 2
+#    end
+#
+#    (1..N).each do |i|
+#        config.vm.define "node-#{i}" do |node|
+#            node.vm.box = IMAGE_NAME
+#            node.vm.network "public_network", mode: "bridge", ip: "192.168.1.#{i + 170}"
+#            node.vm.hostname = "node-#{i}"
+#        end
+#    end
+#end
