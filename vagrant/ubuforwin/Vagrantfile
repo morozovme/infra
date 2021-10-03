@@ -16,9 +16,8 @@ Vagrant.configure("2") do |config|
         master.vm.network "public_network", mode: "bridge", ip: "192.168.2.195"
         master.vm.hostname = "ubuforwin"
         master.vm.provision "shell", inline: <<-SHELL
-          inline: "git clone https://github.com/mikefrostov/infrastructure_scripts.git"
+            git clone https://github.com/mikefrostov/infra.git
             #sudo apt-get update
-            sudo git clone https://github.com/mikefrostov/infrastructure_scripts.git
             cd infrastructure_scripts/ubuntu18/ && sudo chmod +x dockerinst.sh && sudo ./dockerinst.sh
             cd ../../
             git clone https://github.com/mikefrostov/main_app.git
@@ -30,6 +29,8 @@ Vagrant.configure("2") do |config|
             cd rvproxy
             sudo docker build -t mikefrostov/rvproxy .
             sudo docker run -d -p 80:80 mikefrostov/rvproxy
+            git clone https://github.com/mikefrostov/koa_app.git
+            
         SHELL
 
 # chef provisioning example
