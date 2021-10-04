@@ -16,10 +16,12 @@ Vagrant.configure("2") do |config|
         master.vm.network "public_network", mode: "bridge", ip: "192.168.2.195"
         master.vm.hostname = "ubuforwin"
         master.vm.provision "shell", inline: <<-SHELL
-            git clone https://github.com/mikefrostov/infra.git
+            git clone --branch ubuntu20 https://github.com/mikefrostov/infra.git
+            sudo chmod +x infra/install/dockerinst.sh && sudo ./infra/install/dockerinst.sh
+            sudo chmod +x infra/install/docomposeinst.sh && sudo ./infra/install/docomposeinst.sh
             #sudo apt-get update
-            cd infrastructure_scripts/ubuntu18/ && sudo chmod +x dockerinst.sh && sudo ./dockerinst.sh
-            cd ../../
+            #cd infrastructure_scripts/ubuntu18/ && sudo chmod +x dockerinst.sh && sudo ./dockerinst.sh
+            #cd ../../
             git clone https://github.com/mikefrostov/main_app.git
             cd main_app
             sudo docker build -t mikefrostov/main-app .
@@ -29,6 +31,7 @@ Vagrant.configure("2") do |config|
             cd rvproxy
             sudo docker build -t mikefrostov/rvproxy .
             sudo docker run -d -p 80:80 mikefrostov/rvproxy
+            cd ..
             git clone https://github.com/mikefrostov/koa_app.git
             
         SHELL
