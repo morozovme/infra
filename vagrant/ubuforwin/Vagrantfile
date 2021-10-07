@@ -1,7 +1,7 @@
 # shell provision halp:
 # https://automation-remarks.com/setting-vagrant/
 
-IMAGE_NAME = "bento/ubuntu2004"
+IMAGE_NAME = "generic/ubuntu2004"
 #N = 2
 
 Vagrant.configure("2") do |config|
@@ -45,6 +45,8 @@ Vagrant.configure("2") do |config|
             cd ../
             git clone --branch feature/lists https://github.com/mikefrostov/koa_app.git koa_app_lists
             cd koa_app_lists && sudo docker-compose up --detach
+            sudo apt-get install npm -y
+            # sudo ./back/databasemigrate.sh  < --- test and fix
         SHELL
 
 # chef provisioning example
