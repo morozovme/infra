@@ -1,7 +1,7 @@
 # shell provision halp:
 # https://automation-remarks.com/setting-vagrant/
 
-IMAGE_NAME = "generic/ubuntu2004"
+IMAGE_NAME = "bento/ubuntu2004"
 #N = 2
 
 Vagrant.configure("2") do |config|
@@ -13,9 +13,16 @@ Vagrant.configure("2") do |config|
       
     config.vm.define "ubuforwin" do |master|
         master.vm.box = IMAGE_NAME
-        master.vm.network "public_network", mode: "bridge", ip: "192.168.2.195"
+        master.vm.network "public_network", mode: "bridge", ip: "192.168.1.88"
+        #master.ssh.private_key_path = "~/.ssh/id_rsa"
+        master.ssh.forward_agent = true
         master.vm.hostname = "ubuforwin"
         master.vm.provision "shell", inline: <<-SHELL
+            sudo ip route del default via 10.0.2.2
+            sudo ip route add default via 192.168.1.1
+            sudo git config --global user.name "mikefrostov"
+            sudo git config --global user.email "m.e.morozov1@gmail.com"
+            sudo apt-get update -y
             git clone --branch ubuntu20 https://github.com/mikefrostov/infra.git
             sudo chmod +x infra/install/dockerinst.sh && sudo ./infra/install/dockerinst.sh
             sudo chmod +x infra/install/docomposeinst.sh && sudo ./infra/install/docomposeinst.sh
@@ -32,7 +39,7 @@ Vagrant.configure("2") do |config|
             sudo docker build -t mikefrostov/rvproxy .
             sudo docker run -d -p 80:80 mikefrostov/rvproxy
             cd ..
-            git clone https://github.com/mikefrostov/koa_app.git
+            git clone --branch compozation https://github.com/mikefrostov/koa_app.git
             
         SHELL
 
