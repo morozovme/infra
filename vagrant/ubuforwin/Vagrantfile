@@ -46,7 +46,9 @@ Vagrant.configure("2") do |config|
             git clone --branch feature/lists https://github.com/mikefrostov/koa_app.git koa_app_lists
             cd koa_app_lists && sudo docker-compose up --detach
             sudo apt-get install npm -y
-            # sudo ./back/databasemigrate.sh  < --- test and fix
+            cd backend && sudo npm install && sudo ./databasemigration.sh
+            
+           
         SHELL
 
 # chef provisioning example
