@@ -47,9 +47,27 @@ Vagrant.configure("2") do |config|
             cd koa_app_lists && sudo docker-compose up --detach
             sudo apt-get install npm -y
             cd backend && sudo npm install && sudo ./databasemigration.sh
+            cd ~
+            git clone https://github.com/mikefrostov/nodejs_streaming_app.git
             
-           
+            
+            
+            git clone https://github.com/mikefrostov/nodejs_blogapp.git
+            cd nodejs_blogapp && sudo docker-compose up --detach
+            cd ..
+            git clone https://github.com/mikefrostov/flaskr-tdd.git
+            cd flaskr-tdd && sudo docker build -t mikefrostov/flaskr . && sudo docker run -d -p 8087:5000 -t mikefrostov/flaskr
+            
+            
+            
+            git clone https://github.com/mikefrostov/rosh.git
+            
+            
+            
+            
         SHELL
+
+
 
 # chef provisioning example
     #    config.vm.provision :chef_solo do |chef|
