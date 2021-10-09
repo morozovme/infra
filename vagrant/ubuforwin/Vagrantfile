@@ -48,21 +48,17 @@ Vagrant.configure("2") do |config|
             sudo apt-get install npm -y
             cd backend && sudo npm install && sudo ./databasemigration.sh
             cd ~
-            git clone https://github.com/mikefrostov/nodejs_streaming_app.git
-            
-            
-            
+            #git clone https://github.com/mikefrostov/nodejs_streaming_app.git
+
             git clone https://github.com/mikefrostov/nodejs_blogapp.git
             cd nodejs_blogapp && sudo docker-compose up --detach
             cd ..
             git clone https://github.com/mikefrostov/flaskr-tdd.git
-            cd flaskr-tdd && sudo docker build -t mikefrostov/flaskr . && sudo docker run -d -p 8087:5000 -t mikefrostov/flaskr
-            
-            
-            
+            cd flaskr-tdd && sudo docker build -t mikefrostov/flaskr . && sudo docker run -d -p 8087:8087 -t mikefrostov/flaskr
+            cd ~
             git clone https://github.com/mikefrostov/rosh.git
-            
-            
+            cd rosh && sudo docker build -t mikefrostov/rosh . && sudo docker run -d -p 8086:8086 -t mikefrostov/rosh
+            cd ..
             
             
         SHELL
