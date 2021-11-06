@@ -13,52 +13,49 @@ Vagrant.configure("2") do |config|
       
     config.vm.define "ubuforwin" do |master|
         master.vm.box = IMAGE_NAME
-        master.vm.network "public_network", mode: "bridge", ip: "192.168.1.88"
+        master.vm.network "public_network", mode: "bridge", ip: "192.168.1.180"
         #master.ssh.private_key_path = "~/.ssh/id_rsa"
         master.ssh.forward_agent = true
         master.vm.hostname = "ubuforwin"
         master.vm.provision "shell", inline: <<-SHELL
             sudo ip route del default via 10.0.2.2
             sudo ip route add default via 192.168.1.1
-            sudo git config --global user.name "mikefrostov"
+            sudo git config --global user.name "morozovme"
             sudo git config --global user.email "m.e.morozov1@gmail.com"
             sudo apt-get update -y
-            git clone --branch ubuntu20 https://github.com/mikefrostov/infra.git
+            git clone --branch ubuntu20 https://github.com/morozovme/infra.git
             sudo chmod +x infra/install/dockerinst.sh && sudo ./infra/install/dockerinst.sh
             sudo chmod +x infra/install/docomposeinst.sh && sudo ./infra/install/docomposeinst.sh
             #sudo apt-get update
             #cd infrastructure_scripts/ubuntu18/ && sudo chmod +x dockerinst.sh && sudo ./dockerinst.sh
             #cd ../../
-            git clone https://github.com/mikefrostov/main_app.git
+            git clone https://github.com/morozovme/main_app.git
             cd main_app
-            sudo docker build -t mikefrostov/main-app .
-            sudo docker run -d -p 8084:8084 mikefrostov/main-app
+            sudo docker build -t morozovme/main-app .
+            sudo docker run -d -p 8084:8084 morozovme/main-app
             cd ..
-            git clone https://github.com/mikefrostov/rvproxy.git
+            git clone https://github.com/morozovme/rvproxy.git
             cd rvproxy
-            sudo docker build -t mikefrostov/rvproxy .
-            sudo docker run -d -p 80:80 mikefrostov/rvproxy
+            sudo docker build -t morozovme/rvproxy .
+            sudo docker run -d -p 80:80 morozovme/rvproxy
             cd ..
-            #git clone --branch compozation https://github.com/mikefrostov/koa_app.git
-            git clone https://github.com/mikefrostov/koa_app.git
+            #git clone --branch compozation https://github.com/morozovme/koa_app.git
+            git clone https://github.com/morozovme/koa_app.git
             cd koa_app && sudo docker-compose up --detach
             cd ../
-            git clone --branch feature/lists https://github.com/mikefrostov/koa_app.git koa_app_lists
+            git clone --branch feature/lists https://github.com/morozovme/koa_app.git koa_app_lists
             cd koa_app_lists && sudo docker-compose up --detach
             sudo apt-get install npm -y
             cd backend && sudo npm install && sudo ./databasemigration.sh
             cd ~
-            #git clone https://github.com/mikefrostov/nodejs_streaming_app.git
+            #git clone https://github.com/morozovme/nodejs_streaming_app.git
 
-            git clone https://github.com/mikefrostov/nodejs_blogapp.git
+            git clone https://github.com/morozovme/nodejs_blogapp.git
             cd nodejs_blogapp && sudo docker-compose up --detach
             cd ..
-            git clone https://github.com/mikefrostov/flaskr-tdd.git
-            cd flaskr-tdd && sudo docker build -t mikefrostov/flaskr . && sudo docker run -d -p 8087:8087 -t mikefrostov/flaskr
+            git clone https://github.com/morozovme/flaskr-tdd.git
+            cd flaskr-tdd && sudo docker build -t morozovme/flaskr . && sudo docker run -d -p 8087:8087 -t morozovme/flaskr
             cd ~
-            git clone https://github.com/mikefrostov/rosh.git
-            cd rosh && sudo docker build -t mikefrostov/rosh . && sudo docker run -d -p 8086:8086 -t mikefrostov/rosh
-            cd ..
             
             
         SHELL
