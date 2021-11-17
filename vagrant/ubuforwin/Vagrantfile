@@ -18,12 +18,21 @@ Vagrant.configure("2") do |config|
         master.ssh.forward_agent = true
         master.vm.hostname = "ubuforwin"
         master.vm.provision "shell", inline: <<-SHELL
+            set -e
             sudo ip route del default via 10.0.2.2
             sudo ip route add default via 192.168.1.1
             sudo git config --global user.name "morozovme"
             sudo git config --global user.email "m.e.morozov1@gmail.com"
             sudo apt-get update -y
             git clone --branch ubuntu20 https://github.com/morozovme/infra.git
+            sudo mkdir -p /etc/docker
+            sudo touch /etc/docker/daemon.json
+            sudo tee -a /etc/docker/daemon.json <<EOF
+{
+"registry-mirrors": ["http://192.168.1.88:6000"]
+}
+EOF
+            curl http://192.168.1.88:6000/v2/_catalog
             sudo chmod +x infra/install/dockerinst.sh && sudo ./infra/install/dockerinst.sh
             sudo chmod +x infra/install/docomposeinst.sh && sudo ./infra/install/docomposeinst.sh
             #sudo apt-get update
@@ -47,16 +56,17 @@ Vagrant.configure("2") do |config|
             cd koa_app_lists && sudo docker-compose up --detach
             sudo apt-get install npm -y
             cd backend && sudo npm install && sudo ./databasemigration.sh
-            cd ~
+            
             #git clone https://github.com/morozovme/nodejs_streaming_app.git
-
+            cd /home/vagrant
             git clone https://github.com/morozovme/nodejs_blogapp.git
             cd nodejs_blogapp && sudo docker-compose up --detach
             cd ..
             git clone https://github.com/morozovme/flaskr-tdd.git
             cd flaskr-tdd && sudo docker build -t morozovme/flaskr . && sudo docker run -d -p 8087:8087 -t morozovme/flaskr
-            cd ~
-            
+            #sudo docker run -d -p 6000:5000 -e REGISTRY_PROXY_REMOTEURL=http://192.168.1.88:6000 --restart always --name registry registry:2
+            #sudo rm -f /etc/docker/daemon.json
+            #echo "{\"registry-mirrors\": [\"http://127.0.0.1:6000\"]}" | sudo tee /etc/docker/daemon.json
             
         SHELL
 

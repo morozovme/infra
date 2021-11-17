@@ -10,5 +10,6 @@ cd container-registry
 sudo docker build -t localhost:5000/registry:dev .
 sudo docker push localhost:5000/registry:dev
 
-
+# pull through docker mirror registry 
+#docker run -d -p 6000:5000 -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io --restart always --name registry registry:2
 
