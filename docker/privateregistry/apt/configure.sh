@@ -1,6 +1,12 @@
+#https://github.com/sameersbn/docker-apt-cacher-ng
+sudo echo 'Acquire::HTTP::Proxy "http://192.168.1.147:3142";' >> /etc/apt/apt.conf.d/01proxy
+sudo echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
+
+
+
 # https://docs.docker.com/samples/apt-cacher-ng/
 #sudo echo 'Acquire::http { Proxy "http://192.168.1.147:3142"; };' >> /etc/apt/apt.conf.d/01proxy
-#export http_proxy=http://dockerhost:3142/
+#export http_proxy=http://192.168.1.147:3142
 #Change your sources.list entries to start with http://dockerhost:3142/
 
 
