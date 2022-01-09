@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
       
     config.vm.define "ubuforwin" do |master|
         master.vm.box = IMAGE_NAME
-        master.vm.network "public_network", mode: "bridge", ip: "192.168.1.201"
+        master.vm.network "public_network", mode: "bridge", ip: "192.168.1.180"
         #master.ssh.private_key_path = "~/.ssh/id_rsa"
         master.ssh.forward_agent = true
         master.vm.hostname = "ubuforwin"
@@ -23,27 +23,50 @@ Vagrant.configure("2") do |config|
             sudo ip route add default via 192.168.1.1
             sudo git config --global user.name "morozovme"
             sudo git config --global user.email "m.e.morozov1@gmail.com"
+            sudo echo 'Acquire::HTTP::Proxy "http://192.168.1.147:3142";' >> /etc/apt/apt.conf.d/01proxy
+            sudo echo 'Acquire::HTTPS::Proxy "false";' >> /etc/apt/apt.conf.d/01proxy
             sudo apt-get update -y
+            sudo apt install cifs-utils -y
+            sudo apt-get install mongodb-clients -y
             git clone --branch ubuntu20 https://github.com/morozovme/infra.git
-            sudo mkdir -p /etc/docker
-            sudo touch /etc/docker/daemon.json
-            sudo tee -a /etc/docker/daemon.json <<EOF
-{
-"registry-mirrors": ["http://192.168.1.88:6000"]
-}
-EOF
-            curl http://192.168.1.88:6000/v2/_catalog
+
+            sudo mkdir -p /etc/systemd/system/docker.service.d
+
             sudo chmod +x infra/install/dockerinst.sh && sudo ./infra/install/dockerinst.sh
             sudo chmod +x infra/install/docomposeinst.sh && sudo ./infra/install/docomposeinst.sh
+            ## adding my local pull-through cache
+            sudo touch /etc/systemd/system/docker.service.d/http-proxy.conf
+            sudo tee /etc/systemd/system/docker.service.d/http-proxy.conf <<EOF
+            [Service]
+            Environment="HTTP_PROXY=http://192.168.1.147:3128"
+            Environment="HTTPS_PROXY=http://192.168.1.147:3128"
+EOF
+            sudo curl http://192.168.1.147:3128/ca.crt > /usr/share/ca-certificates/docker_registry_proxy.crt
+            sudo echo "docker_registry_proxy.crt" >> /etc/ca-certificates.conf
+            sudo update-ca-certificates --fresh
+            
+            ## Reload systemd
+
+
+
+
             #sudo apt-get update
             #cd infrastructure_scripts/ubuntu18/ && sudo chmod +x dockerinst.sh && sudo ./dockerinst.sh
             #cd ../../
             # mount smb for volume storage
-            sudo mount -t cifs //192.168.1.147/464 /mnt/win_share -o user=guest
+            sudo mkdir /mnt/win_share
+            sudo mount -t cifs //192.168.1.147/464 /mnt/win_share -o user=guest,password=''
             #scp -r root@192.168.1.147:/mnt/464/linuxdata ./
-            sudo cp -r /mnt/win_share/linuxdata/mikefrostov/volumes/volumes2/*  /var/lib/docker/volumes/
-            git clone https://github.com/morozovme/main_app.git
+            #sudo cp -r /mnt/win_share/linuxdata/mikefrostov/volumes/volumes2/*  /var/lib/docker/volumes/
+            git clone -b feature/MC-12-new-design https://github.com/morozovme/main_app.git
+            #sudo cp -r /mnt/win_share/linuxdata/mikefrostov/upload/*  /home/vagrant/app/public/uploads
+            pwd
             cd main_app
+            sudo systemctl status docker
+            systemctl daemon-reload
+            #
+            ## Restart dockerd
+            systemctl restart docker.service
             sudo docker-compose up -d
 #            sudo docker build -t morozovme/main-app .
 #            sudo docker run -d -p 8084:8084 morozovme/main-app
@@ -102,3 +125,13 @@ end
 #        end
 #    end
 #end
+
+
+##            sudo mkdir -p /etc/docker
+##            sudo touch /etc/docker/daemon.json
+##            sudo tee -a /etc/docker/daemon.json <<EOF
+##{
+##"registry-mirrors": ["http://192.168.1.88:6000"]
+##}
+##EOF
+##            curl http://192.168.1.88:6000/v2/_catalog
