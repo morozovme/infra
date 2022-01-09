@@ -40,6 +40,8 @@ EOF
             #cd ../../
             # mount smb for volume storage
             sudo mount -t cifs //192.168.1.147/464 /mnt/win_share -o user=guest
+            #scp -r root@192.168.1.147:/mnt/464/linuxdata ./
+            sudo cp -r /mnt/win_share/linuxdata/mikefrostov/volumes/volumes2/*  /var/lib/docker/volumes/
             git clone https://github.com/morozovme/main_app.git
 #            cd main_app
 #            sudo docker build -t morozovme/main-app .
