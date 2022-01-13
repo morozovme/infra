@@ -57,9 +57,9 @@ EOF
             sudo mkdir /mnt/win_share
             sudo mount -t cifs //192.168.1.147/464 /mnt/win_share -o user=guest,password=''
             #scp -r root@192.168.1.147:/mnt/464/linuxdata ./
-            #sudo cp -r /mnt/win_share/linuxdata/mikefrostov/volumes/volumes2/*  /var/lib/docker/volumes/
+            sudo cp -r /mnt/win_share/linuxdata/mikefrostov/MondayJanuary102022/volumes/*  /var/lib/docker/volumes/
             git clone -b feature/MC-12-new-design https://github.com/morozovme/main_app.git
-            #sudo cp -r /mnt/win_share/linuxdata/mikefrostov/upload/*  /home/vagrant/app/public/uploads
+            sudo cp -r /mnt/win_share/linuxdata/mikefrostov/MondayJanuary102022/uploads/uploads/*  /home/vagrant/app/public/uploads
             pwd
             cd main_app
             sudo systemctl status docker
