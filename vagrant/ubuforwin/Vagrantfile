@@ -59,7 +59,7 @@ EOF
             #scp -r root@192.168.1.147:/mnt/464/linuxdata ./
             sudo cp -r /mnt/win_share/linuxdata/mikefrostov/MondayJanuary102022/volumes/*  /var/lib/docker/volumes/
             git clone -b feature/MC-12-new-design https://github.com/morozovme/main_app.git
-            sudo cp -r /mnt/win_share/linuxdata/mikefrostov/MondayJanuary102022/uploads/uploads/*  /home/vagrant/app/public/uploads
+            sudo cp -r /mnt/win_share/linuxdata/mikefrostov/MondayJanuary102022/uploads/uploads/*  /home/vagrant/main_app/app/public/uploads
             pwd
             cd main_app
             sudo systemctl status docker
