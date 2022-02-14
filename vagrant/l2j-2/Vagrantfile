@@ -98,6 +98,7 @@ EOF
             sudo mysql --user="root" --password="" --database="mysql" --execute="CREATE OR REPLACE USER 'l2j'@'%' IDENTIFIED BY 'l2jserver2019';"
             sudo mysql --user="root" --password="" --database="mysql" --execute="GRANT ALL PRIVILEGES ON *.* TO 'l2j'@'%' IDENTIFIED BY 'l2jserver2019';"
             sudo mysql --user="root" --password="" --database="mysql" --execute="FLUSH PRIVILEGES;"
+            sudo mysql --user="root" --password="" --database="mysql" --execute="SET GLOBAL max_connections = 512;" 
  
 
 
@@ -112,6 +113,8 @@ EOF
 #            cd ~/l2j/cli
 #            ./l2jcli.sh
 #            account create -u Zoey76 -p 1q2w3e
+#            account create -u no0brus -p 1q2w3e
+#            account create -u solokate -p 1q2w3e
 #            quit
 #            cd ~/l2j/server/login
 #            ./startLoginServer.sh
