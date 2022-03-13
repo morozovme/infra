@@ -1,2 +1,2 @@
-external_url 'https://gitlab.morozovme.com/'
-gitlab_rails['initial_root_password'] = File.read('/run/secrets/gitlab_root_password')
+external_url 'http://gitlab.morozovme.com/'
+gitlab_rails['initial_root_password'] = '1q2w3e4r'
