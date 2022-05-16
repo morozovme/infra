@@ -10,5 +10,6 @@ docker image remove ubuntu:16.04
 
 docker image remove k8smaster.home:5000/myubuntu
 
+curl -X GET http://k8smaster.home:5000/v2/_catalog
 
 docker pull k8smaster.home:5000/myubuntu
